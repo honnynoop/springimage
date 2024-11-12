@@ -1,0 +1,292 @@
+CREATE SCHEMA IF NOT EXISTS `spring_jwt` DEFAULT 
+CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE `spring_jwt` ;
+show tables;
+select * from user;
+select * from token;
+
+
+Hibernate: 
+    drop table if exists token
+Hibernate: 
+    drop table if exists user
+Hibernate: 
+    create table token (
+        id integer not null auto_increment,
+        is_logged_out bit,
+        user_id integer,
+        access_token varchar(255),
+        refresh_token varchar(255),
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table user (
+        id integer not null auto_increment,
+        first_name varchar(255),
+        last_name varchar(255),
+        password varchar(255),
+        username varchar(255),
+        role enum ('ADMIN','USER'),
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    alter table token 
+       add constraint FKe32ek7ixanakfqsdaokm4q9y2 
+       foreign key (user_id) 
+       references user (id)
+       
+       
+
+ Tomcat started on port 8080 (http) with context path '/'
+ http://localhost:8080/demo
+ http://localhost:8080/admin_only
+ 
+ ddl-auto: create-drop
+ 
+ User user = new User();
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setUsername(request.getUsername());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(request.getRole());
+        
+        
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "password")
+    private String password;
+
+    @Enumerated(value = EnumType.STRING)
+    private Role role;
+            
+post        
+http://localhost:8080/register
+    USER,
+    ADMIN
+{
+"firstName":"king",
+"lastName":"james",
+"username":"james@naver.com",
+"password":"123456",
+"role":"ADMIN"
+}
+결과
+{
+"access_token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJqYW1lc0BuYXZlci5jb20iLCJpYXQiOjE3MzAyNDg1NjgsImV4cCI6MTczMDMzNDk2OH0.5YUzoZH26L1Kf4jX4v2aBXoOfP0y6048A5hAZ2V8x0ffY5PWdJ7KvjC-3cCSsJi_",
+"refresh_token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJqYW1lc0BuYXZlci5jb20iLCJpYXQiOjE3MzAyNDg1NjgsImV4cCI6MTczMDg1MzM2OH0.LclHLNyvXwdMgfu2xxHSBjWUVq8xrSwQVAQ5MllrtPhHLkZSjeLJsvFjt-HGpaMF",
+"message": "User registration was successful"
+}
+
+{
+"firstName":"kal",
+"lastName":"toad",
+"username":"toad@naver.com",
+"password":"123456",
+"role":"USER"
+}
+{
+"access_token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0b2FkQG5hdmVyLmNvbSIsImlhdCI6MTczMDI0ODUzNSwiZXhwIjoxNzMwMzM0OTM1fQ.9sbnGaCadgN9tAd8OnomaaYsM3nTN4eI9LDa5WlbuCA50SCkUzmrpady1GpbpWjJ",
+"refresh_token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0b2FkQG5hdmVyLmNvbSIsImlhdCI6MTczMDI0ODUzNSwiZXhwIjoxNzMwODUzMzM1fQ.0D1eWFy8coeCEddlnnbUrYsVPNKTDV3xVjqcQDce3cQN_anqwNuZWotvyvBZV29g",
+"message": "User registration was successful"
+}
+
+
+http://localhost:8080/login
+{
+"username":"king@naver.com",
+"password":"123456"
+}
+
+{
+"access_token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJraW5nQG5hdmVyLmNvbSIsImlhdCI6MTczMDY4MjQzMiwiZXhwIjoxNzMwNzY4ODMyfQ.kvZpZC3tIOqDCvNhHYBBl9Db-23JNXZDZkUlVxevc5tEWyj8IzBQ-MiH13ZskTuK",
+"refresh_token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJraW5nQG5hdmVyLmNvbSIsImlhdCI6MTczMDY4MjQzMiwiZXhwIjoxNzMxMjg3MjMyfQ.23dab41uIdcLseoROYR2HBBPHblXP3EBPhLThm874C4NVCUWGyfnMTbH89SWc28Q",
+"message": "User login was successful"
+}
+http://localhost:8080/admin_only
+Authorization
+Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJraW5nQG5hdmVyLmNvbSIsImlhdCI6MTczMDY4MjQzMiwiZXhwIjoxNzMwNzY4ODMyfQ.kvZpZC3tIOqDCvNhHYBBl9Db-23JNXZDZkUlVxevc5tEWyj8IzBQ-MiH13ZskTuK
+
+
+
+{
+"access_token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJqYW1lc0BuYXZlci5jb20iLCJpYXQiOjE3MzAyNDQ1NjUsImV4cCI6MTczMDMzMDk2NX0.js1V0DlUIKd_o6P885ScydMqgbwivbXI_P5E_qhNvExfLa_AlsdETpfKAj9NQSEG",
+"refresh_token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJqYW1lc0BuYXZlci5jb20iLCJpYXQiOjE3MzAyNDQ1NjUsImV4cCI6MTczMDg0OTM2NX0.TaR9K2Ak9q4IKDZHdZSyV-SbtiVBz49vMRLFXMl2v52iBE-Ptn2bhQ3Vuy8Bp4_W",
+"message": "User login was successful"
+}
+
+
+
+
+
+ select
+        t1_0.id,
+        t1_0.access_token,
+        t1_0.is_logged_out,
+        t1_0.refresh_token,
+        t1_0.user_id 
+    from
+        token t1_0 
+    join
+        user u1_0 
+            on t1_0.user_id=u1_0.id 
+    where
+        t1_0.user_id=? 
+        and t1_0.is_logged_out=0
+Hibernate: 
+    update
+        token 
+    set
+        access_token=?,
+        is_logged_out=?,
+        refresh_token=?,
+        user_id=? 
+    where
+        id=?
+Hibernate: 
+    insert 
+    into
+        token
+        (access_token, is_logged_out, refresh_token, user_id) 
+    values
+        (?, ?, ?, ?)
+        
+        
+http://localhost:8080/logout
+Authorization
+Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJqYW1lc0BuYXZlci5jb20iLCJpYXQiOjE3MzA2Mzk2MjAsImV4cCI6MTczMDcyNjAyMH0.CH4C08C-feolvzGD53UktfG8VIeDFubxY2pJAcKGHZpAUDtgXsyEk_HMkM2qE78V
+
+        
+        
+        
+        
+ CREATE SCHEMA IF NOT EXISTS `spring_jwt` DEFAULT 
+CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE `spring_jwt` ;
+show tables;
+select * from user;
+select * from token;
+
+select * from token where is_logged_out=0;
+
+desc user;
+insert into user(username, password,enabled) values('james','123456', true);
+commit;
+
+ 
+ Hibernate: 
+    insert 
+    into
+        token
+        (access_token, is_logged_out, refresh_token, user_id) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.access_token,
+        t1_0.is_logged_out,
+        t1_0.refresh_token,
+        t1_0.user_id 
+    from
+        token t1_0 
+    where
+        t1_0.access_token=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.first_name,
+        u1_0.last_name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.username 
+    from
+        user u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.access_token,
+        t1_0.is_logged_out,
+        t1_0.refresh_token,
+        u1_0.id,
+        u1_0.first_name,
+        u1_0.last_name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.username 
+    from
+        token t1_0 
+    left join
+        user u1_0 
+            on u1_0.id=t1_0.user_id 
+    where
+        t1_0.id=?
+Hibernate: 
+    update
+        token 
+    set
+        access_token=?,
+        is_logged_out=?,
+        refresh_token=?,
+        user_id=? 
+    where
+        id=?
+ 
+ 
+ 
+CREATE SCHEMA IF NOT EXISTS `spring_jwt` DEFAULT 
+CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE `spring_jwt` ;
+show tables;
+select * from user;
+select * from token;
+
+select * from token where is_logged_out=0;
+update token set is_logged_out=1 where is_logged_out=0;
+desc user;
+insert into user(username, password,enabled) values('james','123456', true);
+
+CREATE TABLE `boards` (
+  `board_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `member_id` integer NOT NULL,
+  `title` VARCHAR(200) NOT NULL,
+  `boardcontent` VARCHAR(500) NOT NULL,
+  `writedate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ `hit` int NOT NULL DEFAULT 0,
+  FOREIGN KEY (`member_id`) REFERENCES `user`(`id`) ON DELETE CASCADE
+);
+-- ALTER TABLE sevenboard ADD COLUMN hit INT DEFAULT 0;
+
+
+create table `boardsview`(
+`review_id` INT AUTO_INCREMENT PRIMARY KEY,
+`board_id` INT not null,
+`member_id` integer NOT NULL,
+`title` VARCHAR(200) NOT NULL,
+`boardcontent` VARCHAR(500) NOT NULL,
+`writedate` timestamp not null,
+FOREIGN KEY (`member_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
+FOREIGN KEY (`board_id`) REFERENCES `boards`(`board_id`) ON DELETE CASCADE
+);
+
+
+commit;
+
+ 
+ 
+        
+        
+        
+        
+        
+        
+        
+        
