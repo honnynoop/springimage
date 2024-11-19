@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 //@CrossOrigin("*")
+@RequestMapping("/api/auth")
 public class AuthenticationController {
 
     private final AuthenticationService authService;
@@ -35,10 +37,8 @@ public class AuthenticationController {
 	}
 
 	//http://localhost:8080/refresh_token postrefresh를 이용하여 accesstoken 얻기
-    @PostMapping("/register")
-    public ResponseEntity<?> register(
-            @RequestBody User request
-            ) {
+    @PostMapping("/signup")
+    public ResponseEntity<?> register(@RequestBody User request) {
     	try {
     		//아래 처럼 회원가입했다고 토큰을 줄 필요없다. 
     		//AuthenticationResponse are=authService.register( request);
@@ -51,9 +51,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(
-            @RequestBody User request
-    ) {
+    public ResponseEntity<?> login( @RequestBody User request) {
     	try {
     		return ResponseEntity.ok(authService.authenticate(request));
 		} catch (Exception e) {
@@ -61,11 +59,10 @@ public class AuthenticationController {
 		}
     }
 
-    @PostMapping("/refresh_token")
+    @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(
             HttpServletRequest request,
-            HttpServletResponse response
-    ) {
+            HttpServletResponse response) {
     	try {
     		 return  ResponseEntity.ok(authService.refreshToken(request, response)); 
 		} catch (Exception e) {

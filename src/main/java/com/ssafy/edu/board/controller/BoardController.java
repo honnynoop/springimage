@@ -1,4 +1,4 @@
-package com.ssafy.edu.controller;
+package com.ssafy.edu.board.controller;
 
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 //@CrossOrigin("*")
 @Slf4j
-@RequestMapping("/board")
+@RequestMapping("/api/board")
 public class BoardController {
 
 	private final BoardService boardService;
@@ -34,6 +34,7 @@ public class BoardController {
     }
 	@PostMapping("/add")
     public ResponseEntity<?> addBoard(@RequestBody Board board ) throws Exception {
+	   log.debug("add==================>",board);
        boardService.addBoards(board);
        return new ResponseEntity<String>("add Suceess", HttpStatusCode.valueOf(200));
     }

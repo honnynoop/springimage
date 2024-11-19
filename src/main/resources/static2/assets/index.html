@@ -172,7 +172,8 @@
 
     <script>
       let accessToken = "";
-      const baseUrl="http://localhost:8080";
+      const baseUrl="./api/auth";
+      const baseUrl2="./api";
       async function login() {
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
@@ -202,9 +203,9 @@
           document.getElementById("result").innerHTML = "먼저 로그인해주세요!";
           return;
         }
-
+		alert("admin try!!");
         try {
-          const response = await axios.get(`${baseUrl}/admin_only`, {
+          const response = await axios.get(`${baseUrl2}/admin/only`, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
@@ -231,7 +232,7 @@
           }
           axios
             .post(
-            		`${baseUrl}/logout`,
+            		`${baseUrl2}/logout`,
               {},
               {
                 headers: {
@@ -270,7 +271,7 @@
 
         // axios를 통해 POST 요청 보내기
         axios
-          .post(`${baseUrl}/board/page`, requestData, {
+          .post(`${baseUrl2}/board/page`, requestData, {
             headers: {
               Authorization: `Bearer ${accessToken}`, // Bearer 토큰을 포함
               "Content-Type": "application/json", // JSON 형식으로 데이터 전송

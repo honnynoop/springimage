@@ -9,5 +9,5 @@ public class JwtvueApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(JwtvueApplication.class, args);
 	}
-
+	
 }

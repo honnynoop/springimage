@@ -56,8 +56,11 @@ public class SwaggerConfiguration {
     }
 	@Bean
 	public GroupedOpenApi publicApi() {
-		return GroupedOpenApi.builder().group("com.ssafy.edu.board").pathsToMatch("/board/**").build();
+		return GroupedOpenApi.builder().group("com.ssafy.edu.board").pathsToMatch("/api/board/**").build();
 	}
-
+	@Bean
+	public GroupedOpenApi public2Api() {
+		return GroupedOpenApi.builder().group("com.ssafy.edu.jwt").pathsToMatch("/api/auth/**").build();
+	}
 	
 }

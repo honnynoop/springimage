@@ -59,8 +59,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(//"/swagger-ui/**",를 열면 해당 다른 것도 열어야함
                 		 //req->req.requestMatchers("**","/login/**","/register/**", "/refresh_token/**")
                 		req->req.requestMatchers("/*.html","/css/**","/image/**",
-                				"/login/**","/register/**", "/refresh_token/**",
-                				"/board/**",
+                				//"/login/**","/register/**", "/refresh_token/**",
+                				"/assets/**",
+                				"/api/board/**",
+                				"/api/auth/**",
                 				"/api/v1/auth-service/**",  // Your specific API access,
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
@@ -68,9 +70,9 @@ public class SecurityConfig {
                                 "/webjars/**")
                         //req->req.requestMatchers("/login/**","/register/**", "/refresh_token/**")
                                 .permitAll()
-                                .requestMatchers("/demo").hasAnyRole("USER", "ADMIN")
+                                .requestMatchers("/api/demo/**").hasAnyRole("USER", "ADMIN")
                                 //.requestMatchers("/board/**").hasAuthority("USER")
-                                .requestMatchers("/admin_only").hasAuthority("ADMIN")
+                                .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                                 .anyRequest()
                                 .authenticated()
                 ).userDetailsService(userDetailsServiceImp)
@@ -83,7 +85,7 @@ public class SecurityConfig {
                                 )
                                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .logout(l->l
-                        .logoutUrl("/logout")
+                        .logoutUrl("/api/logout")
                         .addLogoutHandler(logoutHandler)
                         .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()
                         ))  

@@ -78,11 +78,14 @@ public class AuthenticationService {
         User user = repository.findByUsername(request.getUsername()).orElseThrow();
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
-
+        
         revokeAllTokenByUser(user);
         saveUserToken(accessToken, refreshToken, user);
-
-        return new AuthenticationResponse(accessToken, refreshToken, "User login was successful");
+        User loginUser=new User();
+        loginUser.setId(user.getId());
+        loginUser.setUsername(user.getUsername());
+        loginUser.setRole(user.getRole());
+        return new AuthenticationResponse(loginUser,accessToken, refreshToken, "User login was successful");
 
     }
     private void revokeAllTokenByUser(User user) {

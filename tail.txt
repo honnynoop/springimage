@@ -1,0 +1,382 @@
+tail
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+
+
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{vue,js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+npm install lucide-vue-next
+
+import { format } from "date-fns";
+
+npm install date-fns
+
+
+
+E:\spring2024_1113\boardvue03>
+
+
+
+
+넌 풀스텍 전문가다. 전체 반응형으로 tailwind를 사용한다. vue3를 이용해줘, pinia를 사용해줘
+싸인업을 누르면 싸인업을 할수 있다. 
+로그인을 하면 토큰을 받아서 권한으로 작업할수 있다. 
+어드민은 /api/admin으로 시작한다.
+로그인 로그아웃 리프레슄토큰 을 이용하여 게시난board/add board/page를 작성하고싶다. 
+모두 완성해줘
+axios를 사용한다. 기본 url http://localhost:8080 은 axios에 기본으로 설정하고 
+
+post 
+/api/auth/signup
+{
+  "firstName": "string",
+  "lastName": "string",
+  "password": "123456",
+  "role": "ADMIN",
+  "username": "string@naver.com"
+}
+
+
+post 
+/api/auth/refresh
+
+post 
+/api/auth/login
+{
+  "password": "string"
+  "username": "string@naver.com"
+}
+
+ const response = await axios.post(`${baseUrl}/login`, {
+            username: username,
+            password: password,
+          });
+
+          accessToken = response.data.access_token;
+답변은 다음과 같다.
+{access_token: 'eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYWxAbmF2ZXIuY29tI…4n-LcZrQACg3aF9I1ZC_CgJJKmlajmUT4MPKg8lNkVEY6ZY52', refresh_token: 'eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYWxAbmF2ZXIuY29tI…Dc9EBjNCCGu070JZ7zZX2hVl8yUNYd6Sj77k7iPVBvgp47J1c', message: 'User login was successful'}
+access_token
+: 
+"eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYWxAbmF2ZXIuY29tIiwiaWF0IjoxNzMxODUwMTM1LCJleHAiOjE3MzE5MzY1MzV9.YrO1pvQlupkqCrm4n-LcZrQACg3aF9I1ZC_CgJJKmlajmUT4MPKg8lNkVEY6ZY52"
+message
+: 
+"User login was successful"
+refresh_token
+: 
+"eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYWxAbmF2ZXIuY29tIiwiaWF0IjoxNzMxODUwMTM1LCJleHAiOjE3MzI0NTQ5MzV9.B3TmKhWvFfa5vOtDc9EBjNCCGu070JZ7zZX2hVl8yUNYd6Sj77k7iPVBvgp47J1c"
+[[Prototype]]
+: 
+Object
+
+
+post
+/api/board/page
+{
+  "pageNum": 1,
+  "pageSize": 2
+  "keyword": "title",
+  "search": "라라"
+}
+
+리턴값
+	
+Response body
+Download
+{
+  "total": 3,
+  "list": [
+    {
+      "boardId": 1,
+      "memberId": 1,
+      "title": "라라랜드",
+      "boardcontent": "하하하라라",
+      "writedate": "2024-11-07T23:19:47.000+00:00",
+      "hit": 0
+    },
+    {
+      "boardId": 2,
+      "memberId": 1,
+      "title": "라라랜드",
+      "boardcontent": "하하하라라",
+      "writedate": "2024-11-07T23:21:35.000+00:00",
+      "hit": 0
+    }
+  ],
+  "pageNum": 1,
+  "pageSize": 2,
+  "size": 2,
+  "startRow": 1,
+  "endRow": 2,
+  "pages": 2,
+  "prePage": 0,
+  "nextPage": 2,
+  "isFirstPage": true,
+  "isLastPage": false,
+  "hasPreviousPage": false,
+  "hasNextPage": true,
+  "navigatePages": 8,
+  "navigatepageNums": [
+    1,
+    2
+  ],
+  "navigateFirstPage": 1,
+  "navigateLastPage": 2
+}
+
+post
+/api/board/add
+{
+  "memberId": 2,
+  "title": "글제목",
+  "boardcontent": "글의 내용"
+}
+
+pages는 총 몇 페이징니가 "navigatepageNums": 이 1,2페이지를 보이고 total 글 3개
+
+페이징 html이다. 참고해주ㅏ
+ <script>
+        const urls = ".";
+        let currentPage = 1;
+        let pageSize = 10;
+        let totalPages = 0;
+
+        // axios 설정에 기본 헤더 추가
+        axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+        
+        async function loadBoards(page = 1) {
+            try {
+                const searchType = document.getElementById('searchType').value;
+                const keyword = document.getElementById('keyword').value;
+                
+                const params = new URLSearchParams({
+                    page: page,
+                    size: pageSize
+                });
+
+                if (keyword) {
+                    params.append('searchType', searchType);
+                    params.append('keyword', encodeURIComponent(keyword));
+                }
+
+                const response = await axios.get(`${urls}/api/boards?${params}`);
+                const pageInfo = response.data;
+                
+                renderBoards(pageInfo.list);
+                renderPagination(pageInfo);
+                
+                currentPage = page;
+                totalPages = pageInfo.pages;
+
+            } catch (error) {
+                console.error('Error loading boards:', error);
+                alert('게시글을 불러오는데 실패했습니다.');
+            }
+        }
+
+        function renderBoards(boards) {
+            const boardList = document.getElementById('boardList');
+            boardList.innerHTML = '';
+
+            boards.forEach((board, index) => {
+                const boardNumber = (currentPage - 1) * pageSize + index + 1;
+                const card = document.createElement('div');
+                card.className = 'board-card';
+                card.onclick = () => window.location.href = `view.html?id=${board.id}`;
+                
+                card.innerHTML = `
+                    <div class="board-number">#${boardNumber}</div>
+                    <div class="board-title">${escapeHtml(board.title)}</div>
+                    <div class="board-info">
+                        <span class="board-author">${escapeHtml(board.authorName)}</span>
+                        <span>조회 ${board.viewCount || 0}</span>
+                    </div>
+                    <div class="board-info" style="margin-top: 10px;">
+                        <span>${formatDate(board.createdAt)}</span>
+                        ${board.files && board.files.length ? `<span>📎 ${board.files.length}</span>` : ''}
+                    </div>
+                `;
+                
+                boardList.appendChild(card);
+            });
+        }
+
+        function renderPagination(pageInfo) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            // 처음 페이지
+            addPaginationButton(pagination, '<<', 1, !pageInfo.hasPreviousPage);
+            // 이전 페이지
+            addPaginationButton(pagination, '<', pageInfo.prePage, !pageInfo.hasPreviousPage);
+
+            // 페이지 번호들
+            pageInfo.navigatepageNums.forEach(num => {
+                addPaginationButton(pagination, num, num, false, num === pageInfo.pageNum);
+            });
+
+            // 다음 페이지
+            addPaginationButton(pagination, '>', pageInfo.nextPage, !pageInfo.hasNextPage);
+            // 마지막 페이지
+            addPaginationButton(pagination, '>>', pageInfo.pages, !pageInfo.hasNextPage);
+        }
+
+        function addPaginationButton(container, text, pageNum, disabled, isActive = false) {
+            const button = document.createElement('button');
+            button.innerHTML = text;
+            button.disabled = disabled;
+            if (isActive) button.className = 'active';
+            button.onclick = () => loadBoards(pageNum);
+            container.appendChild(button);
+        }
+
+        function changePageSize() {
+            pageSize = parseInt(document.getElementById('pageSize').value);
+            currentPage = 1;
+            loadBoards(1);
+        }
+
+        function search() {
+            currentPage = 1;
+            loadBoards(1);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        }
+
+        // XSS 방지를 위한 HTML 이스케이프 함수
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // 검색어 입력 필드에서 엔터 키 처리
+        document.getElementById('keyword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                search();
+            }
+        });
+
+        // 초기 로드
+        loadBoards();
+    </script>
+
+
+
+
+어드민
+ try {
+          const response = await axios.get(`${baseUrl2}/admin/only`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+로그아웃
+.post(
+            		`${baseUrl}/logout`,
+              {},
+              {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              },
+
+ function fetchBoardData() {
+        // 입력된 값들을 가져옴
+        const pageNum = document.getElementById("pageNum").value;
+        const pageSize = document.getElementById("pageSize").value;
+        const keyword = document.getElementById("keyword").value;
+        const search = document.getElementById("search").value;
+
+        // 요청 데이터 생성
+        const requestData = {
+          pageNum: parseInt(pageNum),
+          pageSize: parseInt(pageSize),
+          keyword: keyword,
+          search: search,
+        };
+
+        // axios를 통해 POST 요청 보내기
+        axios
+          .post(`${baseUrl2}/board/page`, requestData, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`, // Bearer 토큰을 포함
+              "Content-Type": "application/json", // JSON 형식으로 데이터 전송
+            },
+          })
+          .then((response) => {
+            displayResults(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
+            alert("Error fetching data.");
+          });
+      }
+
+      // 결과를 화면에 표시하는 함수
+      function displayResults(data) {
+        const resultBody = document.getElementById("resultBody");
+        resultBody.innerHTML = ""; // 기존 내용을 초기화
+
+        // 결과 목록을 테이블에 추가
+        data.list.forEach((item) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+                    <td>${item.boardId}</td>
+                    <td>${item.memberId}</td>
+                    <td>${item.title}</td>
+                    <td>${item.boardcontent}</td>
+                    <td>${new Date(item.writedate).toLocaleString()}</td>
+                    <td>${item.hit}</td>
+                `;
+          resultBody.appendChild(row);
+        });
+
+        // 페이지 정보 표시
+        const resultHeader = document.getElementById("resultBody");
+        resultHeader.innerHTML += `
+                <p>Total Results: ${data.size}</p>
+                <p>Page ${data.pageNum} of ${data.pages}</p>
+            `;
+      }
+
+
+
+
+
+{
+"access_token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYWxAbmF2ZXIuY29tIiwiaWF0IjoxNzMxODU2NjE5LCJleHAiOjE3MzE5NDMwMTl9.-6w87y8Ofa0rarIgCBoEeyiaa6aloU2YTEvGfGNGAC9j05BuUSxW5oRXIRASLVF-",
+"refresh_token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYWxAbmF2ZXIuY29tIiwiaWF0IjoxNzMxODU2NjE5LCJleHAiOjE3MzI0NjE0MTl9.P4GQjPo0onZnx3PG6zteG0GfrNnaZJ8_uyaNkkNp-38WDohpOY7FUyAHCQA3dukN",
+"message": null,
+"user":{
+"id": 1,
+"firstName": null,
+"lastName": null,
+"password": null,
+"role": "USER",
+"username": "kal@naver.com"
+}
+}
